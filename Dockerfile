@@ -1,13 +1,19 @@
-FROM centos:latest
+FROM node:18
 
-RUN rpm -Uvh http://mirror.pnl.gov/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+# Create app directory
+WORKDIR /usr/src/app
 
-RUN yum install nodejs npm -y 
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-COPY ./src /opt/src
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
 
-RUN cd /opt/src; npm install
+# Bundle app source
+COPY . .
 
 EXPOSE 8080
-
-CMD ["node", "/opt/src/index.js"]
+CMD [ "node", "index.js" ]
