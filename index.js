@@ -8,6 +8,9 @@ const PORT = 8000
 
 const app = express()
 app.use(cors)
+.get('/', function(req,res){
+  res.send('index.html');
+});
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
