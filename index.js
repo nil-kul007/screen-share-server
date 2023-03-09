@@ -7,20 +7,32 @@ const cors = require('cors')
 const PORT = 8000
 
 const app = express()
-app.use(cors)
-.get('/', function(req,res){
-  res.send('index.html');
-});
+app.use(cors())
+app.get("/", (req, res) => {
+  res.send("Heello....!")
+})
+
 const server = http.createServer(app)
+// const io = new Server(server, {
+//   cors: {
+//       origin: '*',
+//       methods: ['GET', 'POST']
+//   }
+// })
+
+
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: "https://example.com",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
   }
-})
+});
 server.listen(PORT, () => {
   console.log('Server is up on port: ', PORT)
 })
+
 
 io.on("connection", (socket) => {
   console.log('User connected')
