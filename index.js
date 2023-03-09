@@ -2,24 +2,18 @@ const express = require('express')
 const http = require('http')
 const { Server } = require('socket.io')
 const cors = require('cors')
+const path = require('path')
 // const { v4 : uuidV4 } = require('uuid')
 
 const PORT = 8000
 
 const app = express()
 app.use(cors())
-app.get("/", (req, res) => {
-  res.send("Heello....!")
+app.get("/client", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/index.html"))
 })
 
 const server = http.createServer(app)
-// const io = new Server(server, {
-//   cors: {
-//       origin: '*',
-//       methods: ['GET', 'POST']
-//   }
-// })
-
 
 const io = new Server(server, {
   cors: {

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="row">
+    <div class="alert alert-info" role="alert">
+      <p class="fs-2 p-2">User window ID: userId</p>
+    </div>
+    <button class="btn btn-primary col-4 m-2" onclick="createOffer()">Create offer</button><button
+      class="btn btn-primary col-4 m-2">Create answer</button>
+    <hr><textarea style="width: 80vw; margin-bottom: 20px; margin-left: 50px;"></textarea>
+  </div>
+  <script src="socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.emit('join', '1111');
+    socket.on('connection-success', (success) => {
+      console.log(success)
+    })
+    socket.on('sdp', (data) => {
+      textRef.current.value = JSON.stringify(data.sdp)
+      pc.current.setRemoteDescription(new RTCSessionDescription(data.sdp))
+    })
+
+    socket.on('candidate', (data) => {
+      console.log(data)
+      pc.current.addIceCandidate(new RTCIceCandidate(data.candidate))
+    })
+    
+    const _PC = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: ["stun:stun.google.com:19302", "stun:global.stun.twilio.com:3478"]
+        }
+      ]
+    })
+
+    _PC.onicecandidate = (e) => {
+      // when new ice candidate available this willbe triggred
+      if (e.candidate) {
+        console.log(JSON.stringify(e.candidate))
+        socket.emit('candidate', { candidate: e.candidate })
+      }
+    }
+    _PC.oniceconnectionstatechange = (e) => {
+      // helps check the peer connections like (connected, disconnected, failed, closed)
+      console.log(e)
+    }
+    _PC.ontrack = (e) => {
+      // we get remote stream here
+      remoteVideoRef.current.srcObject = e.streams[0]
+    }
+
+    const sendToPeer = (eventType, payload) => {
+      socket.emit(eventType, payload)
+    }
+
+    const processSDP = (sdp) => {
+      console.log(JSON.stringify(sdp))
+      pc.current.setLocalDescription(sdp)
+      sendToPeer('sdp', { sdp })
+    }
+
+    const createOffer = () => {
+      _PC.current.createOffer({
+        offerToReceiveVideo: 1,
+        offerToReceiveAudio: 0
+      }).then(sdp => {
+        // created offer send sdp to the server
+        // processSDP(sdp)
+        console.log(JSON.stringify(sdp))
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  </script>
+</body>
+
+</html>
