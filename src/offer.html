@@ -42,6 +42,7 @@
   const iceCandidates = [];
   peerConnection.onicecandidate = e => {
     if (e.candidate) {
+      console.log('candidate', e.candidate)
       iceCandidates.push(e.candidate);
     }
   };

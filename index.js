@@ -12,12 +12,18 @@ app.use(cors())
 app.get("/client", (req, res) => {
   res.sendFile(path.join(__dirname, "src/index.html"))
 })
+app.get("/support", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/support.html"))
+})
+app.get("/index.js", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/index.js"))
+})
 
 const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: "https://example.com",
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true
