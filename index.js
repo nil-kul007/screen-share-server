@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 
   socket.on('join', function (room) {
     socket.join(room);
-
+    // console.log(socket.listeners(room))
     socket.broadcast.emit('peer-joined', {
       status: 'connection-success',
       roomId: room

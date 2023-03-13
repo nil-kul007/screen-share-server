@@ -1,5 +1,9 @@
 const socket = io();
-const peerConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+const peerConnection = new RTCPeerConnection({ iceServers: [{
+  urls: 'turn:openrelay.metered.ca:80',
+  username: 'openrelayproject',
+  credentials: 'openrelayproject'
+}] });
 
 
 socket.emit('join', '1111');
@@ -17,10 +21,6 @@ socket.on('sdp', (data) => {
   console.log(JSON.stringify(data.sdp))
   peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp))
   createAnswer()
-  let video = document.getElementById("myVideo");
-  video.addEventListener('loadeddata', function() {
-    video.play()
- }, false);
 })
 
 socket.on('candidate', (data) => {
