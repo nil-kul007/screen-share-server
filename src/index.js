@@ -1,8 +1,6 @@
 const socket = io();
 const peerConnection = new RTCPeerConnection({
   iceServers: [
-    {url: 'turn:turn01.hubl.in?transport=udp'},
-    {url: 'turn:turn02.hubl.in?transport=tcp'},
     {
       url: 'turn:numb.viagenie.ca',
       credential: 'muazkh',
