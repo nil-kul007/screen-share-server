@@ -1,9 +1,35 @@
 const socket = io();
-const peerConnection = new RTCPeerConnection({ iceServers: [{
-  urls: 'turn:openrelay.metered.ca:80',
-  username: 'openrelayproject',
-  credentials: 'openrelayproject'
-}] });
+const peerConnection = new RTCPeerConnection({
+  iceServers: [
+    'turn:turn01.hubl.in?transport=udp',
+    'turn:turn02.hubl.in?transport=tcp',
+    {
+      url: 'turn:numb.viagenie.ca',
+      credential: 'muazkh',
+      username: 'webrtc@live.com'
+    },
+    {
+      url: 'turn:192.158.29.39:3478?transport=udp',
+      credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      username: '28224511:1379330808'
+    },
+    {
+      url: 'turn:192.158.29.39:3478?transport=tcp',
+      credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      username: '28224511:1379330808'
+    },
+    {
+      url: 'turn:turn.bistri.com:80',
+      credential: 'homeo',
+      username: 'homeo'
+    },
+    {
+      url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+      credential: 'webrtc',
+      username: 'webrtc'
+    }
+  ]
+});
 
 
 socket.emit('join', '1111');
@@ -41,7 +67,7 @@ peerConnection.ontrack = (e) => {
   if (document.location.pathname === '/support') {
     const video = document.createElement('video');
     video.setAttribute = 'autoplay';
-    video.id='myVideo'
+    video.id = 'myVideo'
     video.controls = true;
     video.muted = false;
     video.height = 240; // in px
